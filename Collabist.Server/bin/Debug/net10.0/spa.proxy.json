@@ -1,0 +1,10 @@
+{
+"SpaProxyServer": {
+"ServerUrl": "https://localhost:61986",
+"RedirectUrl": "",
+"LaunchCommand": "npm run dev",
+"WorkingDirectory": "D:\\Madhav\\Projects\\visual studio\\Collabist\\Collabist.Server\\..\\collabist.client",
+"MaxTimeoutInSeconds": "120",
+"KeepRunning": "false"
+}
+}

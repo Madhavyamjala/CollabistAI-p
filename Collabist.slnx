@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="collabist.client/collabist.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="Collabist.Server/Collabist.Server.csproj" />
+</Solution>

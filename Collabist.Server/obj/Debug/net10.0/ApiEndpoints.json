@@ -1,0 +1,154 @@
+[
+  {
+    "ContainingType": "Collabist.Server.Controllers.ChatController",
+    "Method": "Send",
+    "RelativePath": "api/chat",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Collabist.Server.Controllers.ChatRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Collabist.Server.Controllers.DataSourceController",
+    "Method": "Add",
+    "RelativePath": "api/data-sources",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Collabist.Server.Application.DTOs.DataSource.AddDataSourceRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Collabist.Server.Controllers.DataSourceController",
+    "Method": "Get",
+    "RelativePath": "api/data-sources/{knowledgeBaseId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "knowledgeBaseId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Collabist.Server.Controllers.IndexingController",
+    "Method": "Index",
+    "RelativePath": "api/indexing/{dataSourceId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dataSourceId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Collabist.Server.Controllers.KnowledgeBaseController",
+    "Method": "GetAll",
+    "RelativePath": "api/knowledge-bases",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Collabist.Server.Controllers.KnowledgeBaseController",
+    "Method": "Create",
+    "RelativePath": "api/knowledge-bases",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Collabist.Server.Application.DTOs.KnowledgeBase.CreateKnowledgeBaseRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Collabist.Server.Controllers.OnboardingController",
+    "Method": "Run",
+    "RelativePath": "api/onboarding",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Collabist.Server.Application.DTOs.Onboarding.OnboardingRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Collabist.Server.Application.DTOs.Onboarding.OnboardingResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Collabist.Server.Controllers.OnboardingController",
+    "Method": "Status",
+    "RelativePath": "api/onboarding/status",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "Collabist.Server.Application.DTOs.Onboarding.OnboardingStatusResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Collabist.Server.Controllers.SemanticIndexingController",
+    "Method": "Process",
+    "RelativePath": "api/semantic-indexing/{indexedFileId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "indexedFileId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
