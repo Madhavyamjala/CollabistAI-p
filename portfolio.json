@@ -1,0 +1,14 @@
+{
+  "title": "Collabist",
+  "summary": "A local-first AI knowledge assistant that indexes approved folders once, builds a persistent semantic map of your files, and answers questions with the right context.",
+  "highlights": [
+    "Permissioned folder access with .collabistignore rules",
+    "Resumable indexing engine with SHA-256 change detection",
+    "Local semantic layer: summaries, keywords, document-type inference",
+    "Layered ASP.NET Core API with EF Core + SQLite and a React client"
+  ],
+  "tags": ["C#", "ASP.NET Core", "React", "LLMs"],
+  "section": "work",
+  "folder": "Software Engineering",
+  "order": 2
+}

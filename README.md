@@ -1,153 +1,91 @@
 # Collabist
 
-Collabist is a **local-first AI knowledge assistant** that builds a persistent understanding of a user’s files and documents to deliver fast, private, and context-aware answers. Instead of repeatedly uploading files or manually selecting knowledge bases, Collabist indexes approved folders once, understands them in the background, and intelligently routes queries to the most relevant information.
+**A local-first AI knowledge assistant.** Collabist indexes the folders you approve once, builds a persistent semantic map of your files in the background, and uses that map to answer questions with the right context, so you never have to re-upload documents or pick a knowledge base for each query.
 
-The system is designed to scale cleanly from **individual power users** to **startups** and eventually **large enterprises**, without architectural rewrites.
-
----
+> **Status:** active development. The permission layer, indexing engine and semantic layer are working. Query routing and local-LLM execution are in progress. See [TASKS.md](TASKS.md) for the full roadmap.
 
 ## Why Collabist?
 
-Most AI assistants treat every question as stateless. Collabist does the opposite.
+Most AI assistants treat every question as stateless. Collabist does the opposite:
 
-* Your data is **indexed once**, not re-uploaded every time
-* Knowledge persists across sessions
-* Context is selected automatically
-* File access is explicit and auditable
-* Works offline-first with optional cloud support
+- **Index once, not every time.** Approved folders are indexed a single time and kept up to date by change detection.
+- **Knowledge persists across sessions.** Context is selected automatically from what has already been indexed.
+- **Explicit, auditable access.** Only folders you approve are read, and `.collabistignore` excludes anything sensitive.
+- **Private by default.** Files stay on your machine, and the model provider is pluggable.
 
-Collabist behaves more like an **intelligent operating system layer** than a chat app.
+## Architecture
 
----
-
-## Core Principles
-
-* **Local-first by default** – data stays on the user’s machine
-* **One-time permissions** – folders approved once, reused forever
-* **Resumable background processing** – safe across shutdowns
-* **Automatic internal knowledge bases** – no manual KB selection
-* **Model-agnostic** – local models, company cloud, or user-provided APIs
-
----
-
-## High-Level Architecture
-
-```
-React UI (Desktop / Web)
-        ↓
-ASP.NET Core Backend (Local)
-        ↓
-Approved File System Access
-        ↓
-Indexing Layer
-        ↓
-Semantic Understanding Layer
-        ↓
-Query Routing
-        ↓
-Local / Cloud LLM
+```mermaid
+flowchart TD
+    UI["React client (Vite)"] --> API["ASP.NET Core API (local)"]
+    API --> PERM["Permission layer<br/>approved folders · .collabistignore"]
+    PERM --> IDX["Indexing engine<br/>discovery · type filter · SHA-256 change detection"]
+    IDX --> SEM["Semantic layer<br/>summaries · keywords · doc-type inference"]
+    SEM --> DB[(SQLite via EF Core)]
+    API --> ROUTE["Query routing (in progress)"]
+    ROUTE --> LLM["LLM provider<br/>Gemini today · local / Ollama planned"]
+    DB --> ROUTE
 ```
 
----
+The server follows a layered layout: `Domain/` (entities), `Application/` (DTOs and services), `Infrastructure/` (persistence, file system, AI) and `Controllers/` (HTTP API).
 
-## Current Features (Implemented)
+## Features
 
-### Permissions & Access
+**Working today**
+- One-time folder approval with persistent permission storage
+- Internal knowledge-base scoping, with no mixing of data across permission boundaries
+- Recursive file discovery, file-type filtering and `.collabistignore` rules
+- SHA-256 hashing for change detection, with resumable, restart-safe indexing
+- File-level semantic summaries, keyword extraction and document-type inference
+- Onboarding flow and data-source settings in the React client
+- Gemini-backed responses
 
-* Folder approval with persistent storage
-* Internal KnowledgeBase scoping
-* `.collabistignore` support for excluded files/folders
+**In progress**
+- Query classification and semantic routing to relevant documents
+- Context-window-aware context assembly
+- Local model execution (Ollama-compatible) and bring-your-own API key
+- Desktop quick-chat overlay, then team and organisation workspaces
 
-### Indexing Engine
+## Tech stack
 
-* Recursive file discovery
-* Allowed file-type filtering
-* Ignore-rule enforcement
-* SHA256 hashing for change detection
-* Restart-safe and resumable indexing
+| Layer | Technology |
+|---|---|
+| Client | React 19, Vite 7 |
+| Server | ASP.NET Core (.NET 10), Swagger / OpenAPI |
+| Storage | Entity Framework Core + SQLite |
+| AI | Google Gemini REST API (pluggable provider interface) |
 
-### Semantic Layer (Lightweight, Local)
+## Getting started
 
-* File-level semantic summaries
-* Keyword extraction
-* Document type inference
-* Persistent semantic metadata per file
+**Prerequisites:** [.NET 10 SDK](https://dotnet.microsoft.com/download), Node.js 20+, and a [Gemini API key](https://aistudio.google.com/app/apikey).
 
-These layers together form a **local knowledge graph** that is always available to the assistant.
+```bash
+git clone https://github.com/Madhavyamjala/CollabistAI-p.git
+cd CollabistAI-p/Collabist.Server
 
----
+# store the API key outside source control
+dotnet user-secrets init
+dotnet user-secrets set "Gemini:ApiKey" "<your-key>"
 
-## What Collabist Does *Not* Do
+# apply database migrations and run (the SPA proxy starts the React client too)
+dotnet ef database update
+dotnet run
+```
 
-* It does **not** upload files by default
-* It does **not** ask users to reselect files per query
-* It does **not** mix knowledge across permission boundaries
-* It does **not** depend on a single AI provider
+The API listens on `http://localhost:5031` and Swagger UI is at `/swagger`. To run the client on its own:
 
----
+```bash
+cd collabist.client
+npm install
+npm run dev
+```
 
-## Upcoming Features
+## Design principles
 
-### Query-Time Intelligence
-
-* Lightweight query classification
-* Semantic routing to relevant documents
-* Context-window–aware context assembly
-
-### AI Execution Modes
-
-* Local semantic model (downloaded during onboarding)
-* Local LLM execution (e.g., Ollama-compatible)
-* Company-managed cloud LLM fallback
-* User-provided API keys
-
-### User Experience
-
-* In-app chat interface with history
-* Floating quick-chat overlay (desktop)
-* Background services and auto-start
-
-### Team & Enterprise Readiness
-
-* Organizations, groups, and subgroups
-* Scoped knowledge visibility
-* Shared internal knowledge graphs
-* Audit and access logs
-
----
-
-## Target Users
-
-* **Individuals** – personal knowledge assistant
-* **Power users & developers** – local-first, offline-capable AI
-* **Startups** – shared internal knowledge without SaaS lock-in
-* **Enterprises** – secure, permissioned AI over internal data
-
----
-
-## Development Philosophy
-
-Collabist is built **bottom-up**, prioritizing:
-
-* Correctness over demos
-* Persistence over stateless chats
-* Architecture over shortcuts
-* Scalability over quick hacks
-
-Every layer is designed so that future expansion (teams, enterprise, scale) does **not** require refactoring core systems.
-
----
-
-## Status
-
-Collabist is currently in **active development**, with the foundational indexing and semantic layers completed and query-time intelligence in progress.
-
----
+- **Correctness over demos.** Every layer is persistent and resumable before features are added on top.
+- **Built to scale without rewrites.** The same architecture serves one person, a startup and an enterprise.
+- **Model-agnostic.** No hard dependency on any single AI provider.
 
 ## License
 
-License to be defined.
-
----
-
-Collabist aims to redefine how humans interact with their own knowledge — private, persistent, and intelligent by design.
+License to be decided.
